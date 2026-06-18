@@ -152,6 +152,17 @@ python scripts/train.py \
 - 同一个业务场景持续补数据：用上一轮 `best.pt` 增训。
 - 上次训练没跑完：用 `last.pt` + `--resume`。
 
+## 标注结果与 YOLO Seg 说明
+
+当前工程默认是 **目标检测（Detection）** 流程，不是 YOLO Seg 分割流程。验证脚本输出的 `runs/val_annotated/images/` 是把预测框画到原图上的可视化图片，用来肉眼检查效果；它不会导出 YOLO Seg 标签。
+
+两类数据格式不要混淆：
+
+- 检测（Detection）标签：每行是 `class_id x_center y_center width height`，表示矩形框。
+- 分割（Segmentation）标签：每行通常是 `class_id x1 y1 x2 y2 ... xn yn`，表示目标轮廓多边形点。
+
+如果你的任务只是框出目标位置，继续使用当前 Detection 工程即可。如果你需要导出或训练 YOLO Seg，需要额外准备分割多边形标签，并把基模切换为带 `-seg` 后缀的分割模型，例如 `yolo26s-seg.pt`。
+
 ## 验证并输出画框图片
 
 对验证集评估并将结果画在原图上：
