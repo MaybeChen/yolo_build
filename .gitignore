@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+runs/
+datasets/
+*.pt
+
+# Keep model directory placeholders, but do not commit heavy model files.
+!models/**/.gitkeep
