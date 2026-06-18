@@ -5,3 +5,6 @@ __pycache__/
 runs/
 datasets/
 *.pt
+
+# Keep model directory placeholders, but do not commit heavy model files.
+!models/**/.gitkeep

@@ -68,6 +68,35 @@ cp configs/data.example.yaml configs/data.yaml
 
 将 `path`、`train`、`val` 和 `names` 改成你的数据集路径与类别。
 
+## 基模与权重目录建议
+
+建议把下载的 YOLO26 预训练基模放在 `models/pretrained/` 目录下，例如：
+
+```text
+models/pretrained/yolo26s.pt
+```
+
+训练脚本的 `--model` 既可以写模型名 `yolo26s.pt`，由 Ultralytics 自动查找/下载，也可以写本地路径：
+
+```bash
+python scripts/train.py \
+  --data configs/data.yaml \
+  --model models/pretrained/yolo26s.pt \
+  --epochs 50 \
+  --imgsz 640 \
+  --batch 16 \
+  --project runs/train \
+  --name exp
+```
+
+推荐目录分工：
+
+- `models/pretrained/`：存放官方预训练基模，例如 `yolo26s.pt`。
+- `runs/train/<name>/weights/`：训练过程自动输出的权重，例如 `best.pt`、`last.pt`。
+- `models/exports/`：可选，存放后续导出的 ONNX、TensorRT、OpenVINO 等部署格式。
+
+模型权重通常较大，已在 `.gitignore` 中忽略 `*.pt`，因此建议只提交目录占位文件，不把大权重文件提交到 Git。
+
 ## 训练
 
 ```bash
