@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--conf", type=float, default=0.25, help="Confidence threshold.")
     parser.add_argument("--iou", type=float, default=0.7, help="NMS IoU threshold.")
     parser.add_argument("--imgsz", type=int, default=640, help="Input image size.")
-    parser.add_argument("--device", default=None, help="Device, for example '0' or 'cpu'.")
+    parser.add_argument("--device", default="cpu", help="Device, for example 'cpu' or '0'. Defaults to CPU.")
     parser.add_argument("--max-det", type=int, default=300, help="Maximum detections per image.")
     return parser.parse_args()
 

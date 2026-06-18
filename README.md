@@ -2,7 +2,7 @@
 
 这是一个基于 [Ultralytics YOLO](https://docs.ultralytics.com/) 的最小可用训练、验证与可视化工程。工程支持：
 
-- 使用 YOLO 数据集配置训练目标检测模型。
+- 使用 YOLO 数据集配置在 CPU 上训练 YOLO26 目标检测模型。
 - 对验证集或指定图片目录运行验证/推理。
 - 将检测框、类别名和置信度直接绘制到输入图片上，输出可直观看效果的标注图片。
 
@@ -33,6 +33,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+本工程默认按 CPU 训练/验证配置，脚本默认参数为 `--device cpu`。如果未来需要 GPU，只需显式传入 `--device 0` 或其他 CUDA 设备编号。
 
 > 如需 GPU 训练，请按你的 CUDA 版本安装合适的 PyTorch，再安装本项目依赖。
 
@@ -71,7 +73,7 @@ cp configs/data.example.yaml configs/data.yaml
 ```bash
 python scripts/train.py \
   --data configs/data.yaml \
-  --model yolo11n.pt \
+  --model yolo26n.pt \
   --epochs 50 \
   --imgsz 640 \
   --batch 16 \
@@ -106,16 +108,22 @@ python scripts/validate.py \
 
 如果只想对若干图片看效果，也可以将 `--source` 指向单张图片或图片目录。
 
+## CPU 与 YOLO26 说明
+
+你的场景是 CPU 训练，因此已经将训练和验证脚本的默认设备改为 `cpu`，日常使用时不需要额外传 `--device cpu`。不过 CPU 训练会明显慢于 GPU，建议先用 `yolo26n.pt`、较小 `--imgsz`、较小 `--batch` 和少量 `--epochs` 跑通流程，再根据耗时提高配置。
+
+基模已切换为 YOLO26 检测模型，默认使用 `yolo26n.pt`。使用 Ultralytics Python API 时，YOLO26 的端到端推理由框架处理，本工程继续从 `result.boxes.xyxy / cls / conf` 读取结果并画框即可。
+
 ## 常用参数
 
 ### `scripts/train.py`
 
 - `--data`：YOLO 数据集 YAML。
-- `--model`：预训练模型或已有权重，例如 `yolo11n.pt`、`yolov8n.pt`。
+- `--model`：预训练模型或已有权重，默认 `yolo26n.pt`；也可按资源选择 `yolo26s.pt`、`yolo26m.pt` 等 YOLO26 尺寸。
 - `--epochs`：训练轮数。
 - `--imgsz`：输入尺寸。
 - `--batch`：批大小。
-- `--device`：设备，例如 `0`、`cpu`。
+- `--device`：设备，默认 `cpu`；GPU 可传 `0`。
 - `--project` / `--name`：输出目录。
 
 ### `scripts/validate.py`

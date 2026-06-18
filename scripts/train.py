@@ -16,11 +16,11 @@ from ultralytics import YOLO
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a YOLO object detection model.")
     parser.add_argument("--data", required=True, help="Path to YOLO dataset YAML.")
-    parser.add_argument("--model", default="yolo11n.pt", help="Base model or weights path.")
+    parser.add_argument("--model", default="yolo26n.pt", help="Base model or weights path.")
     parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs.")
     parser.add_argument("--imgsz", type=int, default=640, help="Input image size.")
     parser.add_argument("--batch", type=int, default=16, help="Batch size.")
-    parser.add_argument("--device", default=None, help="Device, for example '0' or 'cpu'.")
+    parser.add_argument("--device", default="cpu", help="Device, for example 'cpu' or '0'. Defaults to CPU.")
     parser.add_argument("--workers", type=int, default=8, help="Data loader workers.")
     parser.add_argument("--project", default="runs/train", help="Training output root.")
     parser.add_argument("--name", default="exp", help="Training run name.")
