@@ -116,6 +116,42 @@ python scripts/train.py \
 runs/train/exp/weights/best.pt
 ```
 
+## 增训建议
+
+后续增训通常不要再从官方基模重新全量训练，而是优先使用上一轮训练得到的权重继续训练：
+
+- 训练被中断或想严格接着同一次实验跑：使用 `runs/train/<name>/weights/last.pt` 并开启 `--resume`。
+- 已完成一轮训练，后续加入新数据或调参继续微调：优先使用上一轮 `best.pt` 作为 `--model`。
+- 如果新增数据类别或分布变化很大，建议把旧数据和新数据合并后一起训练，避免模型只学新数据而遗忘旧数据。
+
+示例：基于上一轮最佳权重继续增训：
+
+```bash
+python scripts/train.py \
+  --data configs/data.yaml \
+  --model runs/train/exp/weights/best.pt \
+  --epochs 30 \
+  --imgsz 640 \
+  --batch 16 \
+  --project runs/train \
+  --name exp_finetune
+```
+
+示例：训练中断后恢复同一次训练：
+
+```bash
+python scripts/train.py \
+  --data configs/data.yaml \
+  --model runs/train/exp/weights/last.pt \
+  --resume
+```
+
+简单判断：
+
+- 从零搭建或数据彻底换了：用 `models/pretrained/yolo26s.pt`。
+- 同一个业务场景持续补数据：用上一轮 `best.pt` 增训。
+- 上次训练没跑完：用 `last.pt` + `--resume`。
+
 ## 验证并输出画框图片
 
 对验证集评估并将结果画在原图上：
