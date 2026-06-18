@@ -73,7 +73,7 @@ cp configs/data.example.yaml configs/data.yaml
 ```bash
 python scripts/train.py \
   --data configs/data.yaml \
-  --model yolo26n.pt \
+  --model yolo26s.pt \
   --epochs 50 \
   --imgsz 640 \
   --batch 16 \
@@ -110,16 +110,16 @@ python scripts/validate.py \
 
 ## CPU 与 YOLO26 说明
 
-你的场景是 CPU 训练，因此已经将训练和验证脚本的默认设备改为 `cpu`，日常使用时不需要额外传 `--device cpu`。不过 CPU 训练会明显慢于 GPU，建议先用 `yolo26n.pt`、较小 `--imgsz`、较小 `--batch` 和少量 `--epochs` 跑通流程，再根据耗时提高配置。
+你的场景是 CPU 训练，因此已经将训练和验证脚本的默认设备改为 `cpu`，日常使用时不需要额外传 `--device cpu`。不过 CPU 训练会明显慢于 GPU，建议先用 `yolo26s.pt`、较小 `--imgsz`、较小 `--batch` 和少量 `--epochs` 跑通流程，再根据耗时提高配置。
 
-基模已切换为 YOLO26 检测模型，默认使用 `yolo26n.pt`。使用 Ultralytics Python API 时，YOLO26 的端到端推理由框架处理，本工程继续从 `result.boxes.xyxy / cls / conf` 读取结果并画框即可。
+基模已切换为 YOLO26 检测模型，默认使用 `yolo26s.pt`。使用 Ultralytics Python API 时，YOLO26 的端到端推理由框架处理，本工程继续从 `result.boxes.xyxy / cls / conf` 读取结果并画框即可。
 
 ## 常用参数
 
 ### `scripts/train.py`
 
 - `--data`：YOLO 数据集 YAML。
-- `--model`：预训练模型或已有权重，默认 `yolo26n.pt`；也可按资源选择 `yolo26s.pt`、`yolo26m.pt` 等 YOLO26 尺寸。
+- `--model`：预训练模型或已有权重，默认 `yolo26s.pt`；也可按资源选择更轻量的 `yolo26n.pt`，或更高精度但更慢的 `yolo26m.pt`、`yolo26l.pt`、`yolo26x.pt` 等 YOLO26 尺寸。
 - `--epochs`：训练轮数。
 - `--imgsz`：输入尺寸。
 - `--batch`：批大小。
