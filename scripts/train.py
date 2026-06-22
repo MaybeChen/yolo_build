@@ -10,7 +10,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from ultralytics import YOLO
+from yolo_build.dependencies import load_yolo
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,7 +35,8 @@ def main() -> None:
     if not data_path.exists():
         raise FileNotFoundError(f"Dataset YAML does not exist: {data_path}")
 
-    model = YOLO(args.model)
+    yolo_cls = load_yolo()
+    model = yolo_cls(args.model)
     results = model.train(
         data=str(data_path),
         epochs=args.epochs,

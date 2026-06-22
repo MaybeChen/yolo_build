@@ -211,3 +211,16 @@ python scripts/validate.py \
 - `--conf`：置信度阈值。
 - `--iou`：NMS IoU 阈值。
 - `--max-det`：单张图最多检测数量。
+
+### PyCharm 解释器与 `ultralytics` 导入问题
+
+如果运行训练脚本时提示“未在当前运行脚本的 Python 环境中找到 ultralytics”，先看提示中的“当前运行脚本的 Python”路径。这个路径代表实际启动脚本的解释器，不一定等于你在 PyCharm 里看到的项目解释器。
+
+如果路径指向某个应用或插件目录（例如 `opencode-dependence`），说明脚本是由该应用/插件的 Python 启动的，而不是 PyCharm 项目解释器。请在 PyCharm 的 **Run/Debug Configuration** 中确认 Python interpreter 选择的是你的项目解释器，并在同一个环境中安装依赖：
+
+```bash
+python -m pip install -r requirements.txt
+python scripts/train.py --data configs/data.example.yaml
+```
+
+关键原则是：安装依赖的 Python 和运行脚本的 Python 必须是同一个。
