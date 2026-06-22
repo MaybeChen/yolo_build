@@ -13,9 +13,8 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 from typing import Iterable
 
-from ultralytics import YOLO
+from yolo_build.dependencies import load_yolo
 
-from yolo_build.visualize import save_annotated_image
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
 
@@ -53,7 +52,7 @@ def iter_images(source: str) -> list[Path]:
     raise FileNotFoundError(f"No images found for source: {source}")
 
 
-def save_metrics(model: YOLO, args: argparse.Namespace, output_dir: Path) -> None:
+def save_metrics(model: object, args: argparse.Namespace, output_dir: Path) -> None:
     if not args.data:
         return
 
@@ -77,7 +76,9 @@ def save_metrics(model: YOLO, args: argparse.Namespace, output_dir: Path) -> Non
     print(f"Validation metrics saved to: {metrics_path}")
 
 
-def annotate_images(model: YOLO, images: Iterable[Path], args: argparse.Namespace, output_dir: Path) -> None:
+def annotate_images(model: object, images: Iterable[Path], args: argparse.Namespace, output_dir: Path) -> None:
+    from yolo_build.visualize import save_annotated_image
+
     images_dir = output_dir / "images"
     names = model.names
     for image_path in images:
@@ -109,7 +110,8 @@ def main() -> None:
     if not weights_path.exists():
         raise FileNotFoundError(f"Weights file does not exist: {weights_path}")
 
-    model = YOLO(str(weights_path))
+    yolo_cls = load_yolo()
+    model = yolo_cls(str(weights_path))
     save_metrics(model, args, output_dir)
     annotate_images(model, iter_images(args.source), args, output_dir)
 
