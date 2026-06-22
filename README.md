@@ -152,6 +152,66 @@ python scripts/train.py \
 - 同一个业务场景持续补数据：用上一轮 `best.pt` 增训。
 - 上次训练没跑完：用 `last.pt` + `--resume`。
 
+## AnyLabeling 导出 YOLO 检测标签
+
+AnyLabeling 里通常不会直接显示名为 `Detection` 的导出按钮；在你截图展示的导出列表中，本工程的普通水平矩形框检测应选择 **`YOLO HBB`**。
+
+用于本工程的检测数据请注意：
+
+1. 标注形状要使用矩形框（Rectangle / Bounding Box），不要用 Polygon、Brush、SAM mask。
+2. 导出菜单选择 `YOLO HBB`，而不是 `YOLO OBB`、`YOLO Seg`、`YOLO Pose`、COCO/VOC/Mask。
+3. 配置文件可使用 `configs/classes.txt`，类别顺序必须和 `configs/data.yaml` 里的 `names` 保持一致。
+4. 导出后应得到每张图片对应的 `.txt` 标签文件，每行格式为 `class_id x_center y_center width height`，坐标是 0 到 1 的归一化值。
+5. 将导出的标签整理到 `labels/train`、`labels/val`，图片放到 `images/train`、`images/val`。
+
+如果你的目标只是普通矩形框检测，请选 **YOLO HBB**。`YOLO OBB` 是旋转框，`YOLO Seg` 是分割多边形，`YOLO Pose` 是姿态关键点，均不是当前工程默认的检测框训练格式。
+
+截图里的常见选项含义：
+
+- `YOLO HBB`：水平矩形框检测，适合本工程。
+- `YOLO OBB`：旋转框检测，适合倾斜文本、遥感目标等旋转目标。
+- `YOLO Seg`：实例分割，需要多边形/掩码标签。
+- `YOLO Pose`：姿态关键点检测。
+- `VOC 检测`、`COCO 检测`：其他检测数据格式，不是本工程默认 YOLO txt 格式。
+
+### 类别名和导出文件命名建议
+
+AnyLabeling 导出时的类别名建议使用稳定的英文小写名称，例如 `person`、`car`、`helmet`，不要使用空格、中文标点或频繁变化的临时名称。类别名必须在三个地方保持一致：
+
+1. AnyLabeling 标注时使用的类别名。
+2. `configs/classes.txt` 中的类别顺序。
+3. `configs/data.yaml` 中的 `names` 顺序。
+
+例如 `configs/classes.txt`：
+
+```text
+person
+car
+```
+
+对应 `configs/data.yaml`：
+
+```yaml
+names:
+  0: person
+  1: car
+```
+
+导出目录名称建议按数据集和版本命名，例如：
+
+```text
+datasets/my_dataset_v1/
+```
+
+如果后续补标或增训，可以使用：
+
+```text
+datasets/my_dataset_v2/
+datasets/my_dataset_2026_06/
+```
+
+注意：YOLO 标签文件名应和图片文件名一一对应。例如 `0001.jpg` 对应 `0001.txt`，不要手动改乱导出的 `.txt` 文件名。
+
 ## 标注结果与 YOLO Seg 说明
 
 当前工程默认是 **目标检测（Detection）** 流程，不是 YOLO Seg 分割流程。验证脚本输出的 `runs/val_annotated/images/` 是把预测框画到原图上的可视化图片，用来肉眼检查效果；它不会导出 YOLO Seg 标签。
