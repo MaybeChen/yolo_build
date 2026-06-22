@@ -14,10 +14,14 @@ def load_yolo() -> Callable[..., Any]:
         if exc.name != "ultralytics":
             raise
         raise SystemExit(
-            "未找到 Python 包 ultralytics。请确认你正在使用安装依赖的同一个 Python 解释器运行脚本：\n"
-            f"  {sys.executable} -m pip install -r requirements.txt\n"
-            f"  {sys.executable} scripts/train.py --data configs/data.example.yaml\n"
-            "如果你使用虚拟环境，请先激活该环境后再运行脚本。"
+            "未在当前运行脚本的 Python 环境中找到 ultralytics。\n"
+            f"当前运行脚本的 Python 是：{sys.executable}\n"
+            "如果这个路径是某个应用或插件自带的 Python（例如 opencode-dependence），"
+            "说明脚本不是由你在 PyCharm 中配置的项目解释器启动的。\n"
+            "请在 PyCharm 的 Run/Debug Configuration 中确认 Python interpreter 选择的是你的项目解释器，"
+            "或先激活虚拟环境后再运行：\n"
+            "  python -m pip install -r requirements.txt\n"
+            "  python scripts/train.py --data configs/data.example.yaml"
         ) from exc
     except ImportError as exc:
         message = str(exc)
