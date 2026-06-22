@@ -154,17 +154,25 @@ python scripts/train.py \
 
 ## AnyLabeling 导出 YOLO 检测标签
 
-AnyLabeling 里通常不会直接显示名为 `Detection` 的导出按钮；检测框标签一般通过 `Export Annotations` > `Export YOLO Annotations` 导出，然后在弹窗里选择对应任务/配置。
+AnyLabeling 里通常不会直接显示名为 `Detection` 的导出按钮；在你截图展示的导出列表中，本工程的普通水平矩形框检测应选择 **`YOLO HBB`**。
 
 用于本工程的检测数据请注意：
 
 1. 标注形状要使用矩形框（Rectangle / Bounding Box），不要用 Polygon、Brush、SAM mask。
-2. 导出菜单选择 `Export YOLO Annotations`，而不是导出 COCO/VOC/Mask。
+2. 导出菜单选择 `YOLO HBB`，而不是 `YOLO OBB`、`YOLO Seg`、`YOLO Pose`、COCO/VOC/Mask。
 3. 配置文件可使用 `configs/classes.txt`，类别顺序必须和 `configs/data.yaml` 里的 `names` 保持一致。
 4. 导出后应得到每张图片对应的 `.txt` 标签文件，每行格式为 `class_id x_center y_center width height`，坐标是 0 到 1 的归一化值。
 5. 将导出的标签整理到 `labels/train`、`labels/val`，图片放到 `images/train`、`images/val`。
 
-如果你当前版本的 AnyLabeling 只看到 YOLO、COCO、VOC 等格式，请优先选 **YOLO**；这里的 YOLO 矩形框导出就是本工程需要的 detection 标签。
+如果你的目标只是普通矩形框检测，请选 **YOLO HBB**。`YOLO OBB` 是旋转框，`YOLO Seg` 是分割多边形，`YOLO Pose` 是姿态关键点，均不是当前工程默认的检测框训练格式。
+
+截图里的常见选项含义：
+
+- `YOLO HBB`：水平矩形框检测，适合本工程。
+- `YOLO OBB`：旋转框检测，适合倾斜文本、遥感目标等旋转目标。
+- `YOLO Seg`：实例分割，需要多边形/掩码标签。
+- `YOLO Pose`：姿态关键点检测。
+- `VOC 检测`、`COCO 检测`：其他检测数据格式，不是本工程默认 YOLO txt 格式。
 
 ## 标注结果与 YOLO Seg 说明
 
